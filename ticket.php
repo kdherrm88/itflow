@@ -101,6 +101,7 @@ if (isset($_GET['ticket_id'])) {
         $asset_ip = nullable_htmlentities($row['asset_ip']);
         $asset_name = nullable_htmlentities($row['asset_name']);
         $asset_type = nullable_htmlentities($row['asset_type']);
+        $asset_uri = nullable_htmlentities($row['asset_uri']);
         $asset_make = nullable_htmlentities($row['asset_make']);
         $asset_model = nullable_htmlentities($row['asset_model']);
         $asset_serial = nullable_htmlentities($row['asset_serial']);
@@ -167,7 +168,7 @@ if (isset($_GET['ticket_id'])) {
             }
 
             $client_tag_id_array[] = $client_tag_id;
-            $client_tag_name_display_array[] = "<a href='clients.php?q=$client_tag_name'><span class='badge bg-$client_tag_color'><i class='fa fa-fw fa-$client_tag_icon mr-2'></i>$client_tag_name</span></a> ";
+            $client_tag_name_display_array[] = "<span class='badge text-light p-1 mr-1' style='background-color: $client_tag_color;'><i class='fa fa-fw fa-$client_tag_icon mr-2'></i>$client_tag_name</span>";
         }
         $client_tags_display = implode(' ', $client_tag_name_display_array);
 
@@ -295,66 +296,61 @@ if (isset($_GET['ticket_id'])) {
                             <textarea class="form-control tinymce" name="ticket_reply" placeholder="Type a response"></textarea>
                         </div>
                         <div class="form-row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="input-group input-group-sm">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fa fa-fw fa-thermometer-half"></i></span>
-                                        </div>
-                                        <select class="form-control select2" name="status" required>
-                                            <option <?php if ($ticket_status == "In-Progress") {echo "selected";}?> >In-Progress</option>
-                                            <option <?php if ($ticket_status == "Pending-Client") {echo "selected";}?> >Pending-Client</option>
-                                            <option <?php if ($ticket_status == "Pending-Vendor") {echo "selected";}?> >Pending-Vendor</option>
-                                            <option <?php if ($ticket_status == "Pending-Shipment") {echo "selected";}?> >Pending-Shipment</option>
-                                            <option <?php if ($ticket_status == "Scheduled") {echo "selected";}?> >Scheduled</option>
-                                            <?php if($config_ticket_autoclose) { ?>
-                                                <option <?php if ($ticket_status == 'Auto Close') { echo "selected"; } ?> >Auto Close</option>
-                                            <?php } ?>
-                                        </select>
+                            <div class="col-md-2">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-fw fa-thermometer-half"></i></span>
                                     </div>
+                                    <select class="form-control select2" name="status" required>
+                                        <option <?php if ($ticket_status == "In-Progress") {echo "selected";}?> >In-Progress</option>
+                                        <option <?php if ($ticket_status == "Pending-Client") {echo "selected";}?> >Pending-Client</option>
+                                        <option <?php if ($ticket_status == "Pending-Vendor") {echo "selected";}?> >Pending-Vendor</option>
+                                        <option <?php if ($ticket_status == "Pending-Shipment") {echo "selected";}?> >Pending-Shipment</option>
+                                        <option <?php if ($ticket_status == "Scheduled") {echo "selected";}?> >Scheduled</option>
+                                        <?php if($config_ticket_autoclose) { ?>
+                                            <option <?php if ($ticket_status == 'Auto Close') { echo "selected"; } ?> >Auto Close</option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                             </div>
 
                             <!-- Time Tracking: Hours -->
-                            <div class="col-sm-2">
-                                <div class="input-group input-group-sm mb-3">
+
+                            <div class="col-sm-3 col-lg-2">
+                                <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text"><i class="fas fa-fw fa-clock"></i></span>
                                     </div>
                                     <input type="text" class="form-control" inputmode="numeric" id="hours" name="hours" placeholder="Hrs" min="0" max="23" pattern="0?[0-9]|1[0-9]|2[0-3]">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">H</span>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Time Tracking: Minutes -->
+
                             <div class="col-sm-1">
-                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group mb-3">
                                     <input type="text" class="form-control" inputmode="numeric" id="minutes" name="minutes" placeholder="Mins" min="0" max="59" pattern="[0-5]?[0-9]">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">M</span>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Time Tracking: Seconds -->
+
                             <div class="col-sm-1">
-                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group mb-3">
                                     <input type="text" class="form-control" inputmode="numeric" id="seconds" name="seconds" placeholder="Secs" min="0" max="59" pattern="[0-5]?[0-9]">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">S</span>
-                                    </div>
                                 </div>
                             </div>
 
                             <!-- Timer Controls -->
-                            <div class="col-sm-1">
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-success btn-sm" id="startStopTimer"><i class="fas fa-fw fa-pause"></i></button>
-                                    <button type="button" class="btn btn-danger btn-sm" id="resetTimer"><i class="fas fa-fw fa-redo-alt"></i></button>
+                            <div class="col-sm-2">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success" id="startStopTimer"><i class="fas fa-fw fa-pause"></i></button>
+                                    <button type="button" class="btn btn-danger" id="resetTimer"><i class="fas fa-fw fa-redo-alt"></i></button>
                                 </div>
                             </div>
+
+                        </div>
+                        <div class="form-row">
 
 
                             <?php if(!empty($contact_email && $contact_email !== $session_email)){ ?>
@@ -514,7 +510,7 @@ if (isset($_GET['ticket_id'])) {
 
                 <!-- Contact card -->
                 <div class="card card-body card-outline card-dark mb-3">
-                    <h4 class="text-secondary">Contact</h4>
+                    <h5 class="text-secondary">Contact</h5>
 
                     <?php if (!empty($contact_id)) { ?>
 
@@ -585,7 +581,7 @@ if (isset($_GET['ticket_id'])) {
 
                 <!-- Ticket watchers card -->
                 <div class="card card-body card-outline card-dark mb-3">
-                    <h4 class="text-secondary">Watchers</h4>
+                    <h5 class="text-secondary">Watchers</h5>
 
                     <div>
                         <a href="#" data-toggle="modal" data-target="#addTicketWatcherModal"><i class="fa fa-fw fa-plus mr-2"></i>Add a Watcher</a>
@@ -607,7 +603,7 @@ if (isset($_GET['ticket_id'])) {
 
                 <!-- Ticket Details card -->
                 <div class="card card-body card-outline card-dark mb-3">
-                    <h4 class="text-secondary">Details</h4>
+                    <h5 class="text-secondary">Details</h5>
                     <div>
                         <i class="fa fa-fw fa-thermometer-half text-secondary ml-1 mr-2"></i><a href="#" data-toggle="modal" data-target="#editTicketPriorityModal<?php echo $ticket_id; ?>"><?php echo $ticket_priority_display; ?></a>
                     </div>
@@ -644,7 +640,7 @@ if (isset($_GET['ticket_id'])) {
 
                 <!-- Asset card -->
                 <div class="card card-body card-outline card-dark mb-3">
-                    <h4 class="text-secondary">Asset</h4>
+                    <h5 class="text-secondary">Asset</h5>
 
                     <?php if ($asset_id == 0) { ?>
 
@@ -655,7 +651,7 @@ if (isset($_GET['ticket_id'])) {
                     <?php } else { ?>
 
                         <div>
-                            <i class="fa fa-fw fa-desktop text-secondary ml-1 mr-2"></i><strong><?php echo $asset_name; ?></strong>
+                            <a href='client_asset_details.php?client_id=<?php echo $client_id?>&asset_id=<?php echo $asset_id?>' ><i class="fa fa-fw fa-desktop text-secondary ml-1 mr-2"></i><strong><?php echo $asset_name; ?></strong></a>
                         </div>
 
                         <?php if (!empty($asset_os)) { ?>
@@ -687,6 +683,12 @@ if (isset($_GET['ticket_id'])) {
                                 <i class="far fa-fw fa-calendar-alt text-secondary ml-1 mr-2"></i>Warranty expires: <strong><?php echo $asset_warranty_expire ?></strong>
                             </div>
                         <?php }
+
+                        if (!empty($asset_uri)) { ?>
+                            <div class="mt-1">
+                                <i class="fa fa-fw fa-globe text-secondary ml-1 mr-2"></i><a href="<?php echo $asset_uri; ?>" target="_blank"><?php echo $asset_uri; ?></a>
+                            </div>
+                        <?php } 
 
                         if ($ticket_asset_count > 0) { ?>
 
@@ -739,7 +741,7 @@ if (isset($_GET['ticket_id'])) {
 
                 <!-- Vendor card -->
                 <div class="card card-body card-outline card-dark mb-3">
-                    <h4 class="text-secondary">Vendor</h4>
+                    <h5 class="text-secondary">Vendor</h5>
                     <?php if (empty($vendor_id)) { ?>
                         <div>
                             <a href="#" data-toggle="modal" data-target="#editTicketVendorModal<?php echo $ticket_id; ?>"><i class="fa fa-fw fa-plus mr-2"></i>Add a Vendor</a>
@@ -818,7 +820,7 @@ if (isset($_GET['ticket_id'])) {
                     <?php }
 
                     if ($ticket_status !== "Closed") { ?>
-                        <a href="post.php?close_ticket=<?php echo $ticket_id; ?>" class="btn btn-secondary btn-block confirm-link">
+                        <a href="post.php?close_ticket=<?php echo $ticket_id; ?>" class="btn btn-secondary btn-block confirm-link" id="ticket_close">
                             <i class="fas fa-fw fa-gavel mr-2"></i>Close Ticket
                         </a>
                     <?php } ?>

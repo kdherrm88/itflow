@@ -11,6 +11,7 @@ require_once "inc_all_settings.php";
         </div>
         <div class="card-body">
             <form action="post.php" method="post" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?>">
 
                 <div class="form-group">
                     <div class="custom-control custom-switch">
@@ -53,18 +54,23 @@ require_once "inc_all_settings.php";
                                 $sql_accounts = mysqli_query($mysqli, "SELECT * FROM accounts LEFT JOIN account_types ON account_types.account_type_id = accounts.account_type WHERE account_type_parent = 1 AND account_archived_at IS NULL ORDER BY account_name ASC");
                                 while ($row = mysqli_fetch_array($sql_accounts)) {
                                     $account_id = intval($row['account_id']);
-                                    $account_name = nullable_htmlentities($row['account_name']); 
+                                    $account_name = nullable_htmlentities($row['account_name']);
                                     ?>
-                                        
+
                                     <option value="<?php echo $account_id ?>" <?php if ($account_id == $config_stripe_account) { echo "selected"; } ?>><?php echo $account_name ?></option>
                                 <?php
                                 }
                                 ?>
                             </select>
-
-
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Client Pays Fees</label>
+                        <div class="custom-control custom-switch">
+                            <input type="checkbox" class="custom-control-input" name="config_stripe_client_pays_fees" <?php if ($config_stripe_client_pays_fees == 1) { echo "checked"; } ?> value="1" id="clientPaysFeesSwitch">
+                            <label class="custom-control-label" for="clientPaysFeesSwitch">Enable</label>
+                    </div>
+
 
                 <?php } ?>
 

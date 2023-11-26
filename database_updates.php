@@ -1498,12 +1498,18 @@ if (LATEST_DATABASE_VERSION > CURRENT_DATABASE_VERSION) {
 
     }
 
-    //if (CURRENT_DATABASE_VERSION == '0.9.4') {
+    if (CURRENT_DATABASE_VERSION == '0.9.4') {
         // Insert queries here required to update to DB version 0.9.5
-
+        mysqli_query($mysqli, "ALTER TABLE `settings` ADD `config_stripe_client_pays_fees` TINYINT(1) NOT NULL DEFAULT 0 AFTER `config_stripe_account`"); 
         // Then, update the database to the next sequential version
-    //    mysqli_query($mysqli, "UPDATE `settings` SET `config_current_database_version` = '0.9.5'");
-    //}
+        mysqli_query($mysqli, "UPDATE `settings` SET `config_current_database_version` = '0.9.5'");
+    }
+
+    if (CURRENT_DATABASE_VERSION == '0.9.5') {
+        mysqli_query($mysqli, "ALTER TABLE `user_settings` ADD `user_config_remember_me_token` VARCHAR(255) NULL DEFAULT NULL AFTER `user_role`");
+        // Then, update the database to the next sequential version
+        mysqli_query($mysqli, "UPDATE `settings` SET `config_current_database_version` = '0.9.6'");
+    }
 } else {
     // Up-to-date
 }

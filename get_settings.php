@@ -84,6 +84,7 @@ $config_stripe_enable = intval($row['config_stripe_enable']);
 $config_stripe_publishable = $row['config_stripe_publishable'];
 $config_stripe_secret = $row['config_stripe_secret'];
 $config_stripe_account = $row['config_stripe_account'];
+$config_stripe_client_pays_fees = intval($row['config_stripe_client_pays_fees']);
 
 // Modules
 $config_module_enable_itdoc = intval($row['config_module_enable_itdoc']);
@@ -204,12 +205,15 @@ $asset_status_array = array (
 $ticket_status_array = array (
     'Pending-Assignment',
     'Assigned',
+    'Client-Replied',
     'In-Progress',
     'Pending-Shipment',
     'Pending-Client',
     'Pending-Vendor',
     'Scheduled',
-    'Closed'
+    'Closed',
+    'Open',
+    'Auto Close'
 );
 
 $industry_select_array = array(
